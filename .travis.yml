@@ -49,9 +49,10 @@ jobs:
       script:
         - sls deploy --stage ${TRAVIS_BRANCH}
     - stage: Laravel
-      before_install:
+      before_script:
         - cd app
         - mv laravel/.env.${TRAVIS_BRANCH} laravel/.env
+      script:
         - /usr/local/bin/aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${ACCOUNT_ID}.dkr.ecr.us-east-1.amazonaws.com
         - export ECR_URI_APACHE=$(aws ecr describe-repositories --repository-names ${APP_NAME}-${TRAVIS_BRANCH}-apache --region us-east-1 --query 'repositories[0].repositoryUri' --output text)
         - export ECR_URI_LARAVEL=$(aws ecr describe-repositories --repository-names ${APP_NAME}-${TRAVIS_BRANCH}-laravel --region us-east-1 --query 'repositories[0].repositoryUri' --output text)
