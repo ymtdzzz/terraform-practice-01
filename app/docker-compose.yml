@@ -16,7 +16,7 @@ services:
       - ./laravel:/var/www/html
       - ./laravel/web/logs:/var/log/httpd
     restart: always
-    env_file: ./laravel/.env.example
+    # env_file: ./laravel/.env.example
     environment:
       PHP_HOST: app
 
