@@ -1,0 +1,65 @@
+language: php
+php:
+  - '7.3'
+branches:
+  only:
+  - dev
+  - stg
+  - prd
+services:
+  - docker
+env:
+  global:
+  - APP_NAME=terraform-practice
+  - AWS_REGION=us-east-1
+  - SLS_DEBUG=true
+  - TERRAFORM_VERSION='0.14.9'
+  # AWS credentials / ENCRYPT_KEY / ACCOUNT_ID
+  - secure: WzCYxilWUNy1GENKOnu9CnbkeEgydWbwDWVb5xkIM36tjvCPk/Zo6tmRCEI81015ks1V4F+3gysOrulREaMFy/0OHvWnyvtMYYtqEcykQrFPGnY06I+Fd5IqqvEO7JqqJcVMnT9JldEdcj7ucWfglgx6Tg3PLTExD7LRBd+6oCoGuC2dny2jr20doFY8G/ZeXa5Pbgz3JLiam1+bp/9zutS2zqnleeYSuUBon1sQzX9xz0BP0kEZoKdRq72SWHZwbRLTc2/cGhl7CynHKKceWs2j35PvzCHbLDZ0p7fCfQeJM/Lk5bBgYik6yLmJgA+ZtevgcWT74U/7ZNq9ilcVhTgYmDmpyeRS6FFsRlR+Vi1/AthD9d0sn5OlURkB3lDdwIMWeV007ZQqkKwyogxgEVKR7kPxFkkYwl/n1tyi0F1duBVvCdyktZGxmUxFgw1x8ds4TTchtceEd5xjLlS8RhIGlKcFsDgcgNUWHHPv9/u/G9DalUnL3RV7Y31FF3BNrvrVlx0mpzBfx1Ww/N/dNavVAvsTzo0izKdjUbOznUr2eJoz5rjpxdvOkHBkjVh7kW2ESD9O89skQcRaMH1/yVSn5bbUbiYt5QoOVAsPLkZPZnvw352HWCM2exFlPRUxt8nywbJgxIukGQuZhTHqiBqfKzwrgJDSntHQ0TVVvy8=
+  - secure: FR4XBMv7KVVfvdDc08uk/DspuyTI38LDSpF57gGByMPYEoqd/uf970WedSX/Viw6+7VniMtfwMUDelIvHb6E97a19OC0E9leSF0Ra51xHPJnNvG+m4U+TUQYZpNPgj0TUqYclSx37cvy4j+ldutwLvgn2rk/lN8UejZd3lessSJ12v5Geep7hIqGPP8FUU/P8kgHzzkIEgNYaEDOS0V/L+zzpjtEXb+xHoAW1nBuWMlff17kcPDxdLRa4kqSsqrwoDGij5rQ3fbuJ/lPKjIB4CAqOLa85iczpeClEMEcpbTltDyTMu8D3tYDLH+qpL/+B1eyr5ET0X2trBgLb7DvuSp4CKYb8sdWf4mog3vTJOM7m2ZUQ2hGXTqXQVYRDdDwGTIxN2yInGxD3IwdvyYBWCX+NmJ6WMomaqhRk3kN02Gsyuxyb6A8au1sDTrYrid1OZOn/8z2/Y8ITKYvWLPu21EYTEvzSFB9tFZty/QyE2FrLwd/qMiF/2XQ90/75qOqsXoiL0yHvmP/iIlhpbpFLhbIEvayKPHhGq4BKhHgPIdayN8bds1JmJrNggngqzexrH5AhxpHgc1zrT8KbKH1Juc91GJXlSG0HgdEyUFUuSdeauM3jtCge5HbCKbRIr+KANn+pjlpMza9J1D4Dm2Yc/rao3jC4HoHuPBJ5f3V+0E=
+  - secure: hO/+4lxow8rDVcqd8k1wQy+asGgXjdlNS9Y+7KtSXgj91sqXu7l9DwrBHPF7Azn6+ai4+bmQOjsqrptOmv83vSqGHX94VvOylflVpZI5I39aJv/X81i1i6/cDe0UFi5KxGoLDs8wHENvfyxVTCw+hkGykLiZW6qiYBA9+vPBpwIaLPC/EspS4ABq/S2KnPz8OXo5A3is1Fq309XXYtC7AkF4x4NRQfTRaxVJigoDL6NBOWS3ZcMd7IJdcNI7oyApACtyw9BQb2aoyss3EKdYBQmg4WrVbRXmoqPN/rpyxp5rruSxHIbzl1rUsX+PF6rGj9c3feIFg9sOwxbyHUNgJeACxSdkEOkPUVMlJeOF+lCQ/wUBg4UWPeVZs+ex3dDW8WFAdrt5S0vjbjfga+tWby6yHWA/ccuIit9ohbqvSy9xTvxdMfXOaKWsVkV0BUAL65v2Hq7CSPo+YLEOY0GSONbmArGOEJrIWlHLB0eMgT5OGZ1QjmU4h41T4tozl5Q2bylQYySVlEss0h2x32FBnoMXJ7jabuVGN09ImKm+Oikvtwh11f8KNKv86gUTJDEM+rPLMw4Cr65iVMlbUaXZePIs00LBK9QuyAs735kOV1E2lEf3KPP7LUmSWJubAK3CV7IeX9e58LSR81GRGY6hFZ0mMSh29YNDTYszRAABFJc=
+  - secure: AVibWN7q3XJkSgqklNrYuRLUBzeRTNsHw4FZWwxCpJPxf72W8htz+YDSxRdLilwvYBwsT3De4AIpbNC7kYjWnohdohKmOyMlzK8QI6ffD8Jq4XGAgC5TnmFgFoINF7osDYt8HaMSk1/SinrYkuolDCEAZ7HOu4PGUMrGTLUeP/g0tNseZIYTF43EYt0K2aAP02z/LiuK/s0B6smL4NShHI9bSkMMmm1UOdZkBnkTD6EgMGL++Pc+1Yrc6N4921FABbXMiRC1eDsHGGLyraveawECEoQyJa4ZXTDWqIzr8MhMfhrhi6SqmNB5l9v0CgnZIj2DjgteRMLsHnY9eV6trTkH0bXwyYvx59aPtP0CRKnjYRVc6d4pzF8KcXUugG9CKsvQZl6WBYx+tlKhR+/KTVoBaYvJseJ0LSUplDTR/sVHok2MyecwU5APdn95+K7hvsof4rZHtyoirryAen2d4vnrCovQ02/ZVkNp82bLPaYei///7YKkoiZJ6zTw/pQTeVJa1c0+zL4zwn3So3HTHlJ7yxrGGPZET8/0m8fkL3+D1Pi98kTfL9pUIQg6FFR8GvWOfKCeOUnwm79/3R4OzJZu2Otyd54DdPCh63FNFxtaUUrsRqbY/CFMHy/lqrkJYuIW7qxNY8qH1CCJyY3/pwSIamPLTClk5z3lC/lJQ8s=
+before_install:
+  - nvm install 12.14.1
+  - npm i -g serverless@2.33.1
+install:
+  # install aws cli
+  - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+  - unzip awscliv2.zip
+  - sudo ./aws/install
+  # install Terraform
+  - wget https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip && unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip;
+  - sudo cp terraform /usr/local/bin/
+  - terraform workspace new dev
+  - terraform workspace new stg
+  - terraform workspace new prd
+jobs:
+  include:
+    - stage: Infra
+      before_script:
+        - cd infra
+        - terraform init
+        - terraform workspace select ${TRAVIS_BRANCH}
+      script:
+        - terraform apply --auto-approve
+    - stage: serverless
+      before_script:
+        - cd app/serverless
+        - yarn install
+      script:
+        - sls deploy --stage ${TRAVIS_BRANCH}
+    - stage: Laravel
+      before_install:
+        - cd app
+        - mv laravel/.env.dev laravel/.env
+        - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${ACCOUNT_ID}.dkr.ecr.us-east-1.amazonaws.com
+        - export ECR_URI_APACHE=$(aws ecr describe-repositories --repository-names ${APP_NAME}-${TRAVIS_BRANCH}-apache --region us-east-1 --query 'repositories[0].repositoryUri' --output text)
+        - export ECR_URI_LARAVEL=$(aws ecr describe-repositories --repository-names ${APP_NAME}-${TRAVIS_BRANCH}-laravel --region us-east-1 --query 'repositories[0].repositoryUri' --output text)
+        - docker build -t ${ECR_URI_APACHE} ./laravel --build-arg ENCRYPT_KEY=${ENCRYPT_KEY}
+        - docker build -t ${ECR_URI_APACHE} -f ./laravel/docker/apache/Dockerfile ./laravel
+        - docker push ${ECR_URI_APACHE}
+        - docker push ${ECR_URI_APACHE}
+        # TODO: blue green deployment with CodeDeploy
+
+
+

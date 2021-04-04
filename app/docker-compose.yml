@@ -1,0 +1,88 @@
+version: '3.7'
+
+services:
+  # apache
+  web:
+    tty: true
+    build:
+      context: ./laravel
+      dockerfile: docker/apache/Dockerfile
+    ports:
+      - '80:80'
+      - '443:443'
+    depends_on:
+      - app
+    volumes:
+      - ./laravel:/var/www/html
+      - ./laravel/web/logs:/var/log/httpd
+    restart: always
+    env_file: ./laravel/.env.example
+    environment:
+      PHP_HOST: app
+
+  # php-fpm
+  app:
+    tty: true
+    build: ./laravel
+    depends_on:
+      - mysql
+    ports:
+      - '9000'
+    restart: always
+    # env_file: ./laravel/.env.example
+    volumes:
+      - ./laravel:/var/www/html:cached
+    # on local environment, we use root user and fix mounted dir's permission
+    user: "root"
+    environment:
+      LOCAL: 1
+
+  # cron
+  cron:
+    tty: true
+    build: ./laravel
+    depends_on:
+      - mysql
+    restart: always
+    # env_file: ./laravel/.env.example
+    volumes:
+      - ./laravel:/var/www/html:cached
+    # on local environment, we use root user and fix mounted dir's permission
+    user: "root"
+    environment:
+      BATCH: 1
+      LOCAL: 1
+
+  # queue
+  queue:
+    tty: true
+    build: ./laravel
+    depends_on:
+      - mysql
+    restart: always
+    # env_file: ./laravel/.env.example
+    volumes:
+      - ./laravel:/var/www/html:cached
+    # on local environment, we use root user and fix mounted dir's permission
+    user: "root"
+    environment:
+      QUEUE: 1
+      LOCAL: 1
+
+  mysql:
+    image: mysql:5.7
+    volumes:
+      - ./laravel/docker/mysql/data:/var/lib/mysql:delegated
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      MYSQL_DATABASE: 'app'
+    ports:
+      - 3306
+
+  elasticmq:
+    image: softwaremill/elasticmq
+    ports:
+      - '9324:9324'
+    volumes:
+      - ./laravel/docker/elasticmq/custom.conf://opt/elasticmq.conf:ro
