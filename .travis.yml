@@ -56,9 +56,9 @@ jobs:
         - /usr/local/bin/aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${ACCOUNT_ID}.dkr.ecr.us-east-1.amazonaws.com
         - export ECR_URI_APACHE=$(aws ecr describe-repositories --repository-names ${APP_NAME}-${TRAVIS_BRANCH}-apache --region us-east-1 --query 'repositories[0].repositoryUri' --output text)
         - export ECR_URI_LARAVEL=$(aws ecr describe-repositories --repository-names ${APP_NAME}-${TRAVIS_BRANCH}-laravel --region us-east-1 --query 'repositories[0].repositoryUri' --output text)
-        - docker build -t ${ECR_URI_APACHE} ./laravel --build-arg ENCRYPT_KEY=${ENCRYPT_KEY}
+        - docker build -t ${ECR_URI_LARAVEL} ./laravel --build-arg ENCRYPT_KEY=${ENCRYPT_KEY}
         - docker build -t ${ECR_URI_APACHE} -f ./laravel/docker/apache/Dockerfile ./laravel
-        - docker push ${ECR_URI_APACHE}
+        - docker push ${ECR_URI_LARAVEL}
         - docker push ${ECR_URI_APACHE}
         # TODO: blue green deployment with CodeDeploy
 
