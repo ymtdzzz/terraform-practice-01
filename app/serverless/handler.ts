@@ -43,7 +43,7 @@ export const hello: APIGatewayProxyHandler = async (event, _context) => {
   return {
     statusCode: 200,
     body: JSON.stringify({
-      message: 'Pushed sample queue message!',
+      message: 'Pushed sample queue message!!',
       input: event,
     }, null, 2),
   };
