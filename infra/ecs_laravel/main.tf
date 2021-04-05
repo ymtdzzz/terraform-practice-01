@@ -325,6 +325,17 @@ resource "aws_security_group_rule" "this_https" {
   cidr_blocks = ["0.0.0.0/0"]
 }
 
+resource "aws_security_group_rule" "this_memcached" {
+  security_group_id = aws_security_group.this.id
+
+  type = "ingress"
+
+  from_port   = 23
+  to_port     = 11211
+  protocol    = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+}
+
 resource "aws_ecs_cluster" "this" {
   name = local.name
 }
