@@ -270,7 +270,11 @@ resource "aws_iam_role_policy" "task_execution" {
         "logs:CreateLogStream",
         "logs:PutLogEvents",
         "logs:DescribeLogGroups",
-        "logs:DescribeLogStreams"
+        "logs:DescribeLogStreams",
+        "ssmmessages:CreateControlChannel",
+        "ssmmessages:CreateDataChannel",
+        "ssmmessages:OpenControlChannel",
+        "ssmmessages:OpenDataChannel"        
       ],
       "Effect": "Allow",
       "Resource": "*"
@@ -367,6 +371,8 @@ resource "aws_ecs_service" "this" {
   cluster = aws_ecs_cluster.this.name
 
   task_definition = aws_ecs_task_definition.this.arn
+
+  enable_execute_command = true
 
   deployment_controller {
     type = "CODE_DEPLOY"
