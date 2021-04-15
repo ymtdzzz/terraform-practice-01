@@ -1,0 +1,11 @@
+version: 0.0
+Resources:
+  - TargetService:
+      Type: AWS::ECS::Service
+      Properties:
+        # MEMO: change arn to your taskdef's after first deployment
+        # ${REV} will be replaced by travis
+        TaskDefinition: '${TASKDEF_ARN}'
+        LoadBalancerInfo:
+          ContainerName: '${APACHE_CONTAINER_NAME}'
+          ContainerPort: 80

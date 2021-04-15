@@ -10,6 +10,9 @@ services:
   - docker
 env:
   global:
+  # some envvar are already defined in terraform files
+  # to avoid this duplication, we can use terraform's output function with --json option.
+  # ref: https://stackoverflow.com/questions/65315202/can-i-set-terraform-output-to-env-variables
   - APP_NAME=terraform-practice
   - AWS_REGION=us-east-1
   - SLS_DEBUG=true
@@ -53,14 +56,21 @@ jobs:
         - cd app
         - mv laravel/.env.${TRAVIS_BRANCH} laravel/.env
       script:
-        - /usr/local/bin/aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${ACCOUNT_ID}.dkr.ecr.us-east-1.amazonaws.com
-        - export ECR_URI_APACHE=$(aws ecr describe-repositories --repository-names ${APP_NAME}-${TRAVIS_BRANCH}-apache --region us-east-1 --query 'repositories[0].repositoryUri' --output text)
-        - export ECR_URI_LARAVEL=$(aws ecr describe-repositories --repository-names ${APP_NAME}-${TRAVIS_BRANCH}-laravel --region us-east-1 --query 'repositories[0].repositoryUri' --output text)
-        - docker build -t ${ECR_URI_LARAVEL} ./laravel --build-arg ENCRYPT_KEY=${ENCRYPT_KEY}
-        - docker build -t ${ECR_URI_APACHE} -f ./laravel/docker/apache/Dockerfile ./laravel
+        - export IMAGE_TAG=${TRAVIS_COMMIT:0:7}
+        - /usr/local/bin/aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
+        - export ECR_URI_APACHE=$(aws ecr describe-repositories --repository-names ${APP_NAME}-${TRAVIS_BRANCH}-apache --region ${AWS_REGION} --query 'repositories[0].repositoryUri' --output text)
+        - export ECR_URI_LARAVEL=$(aws ecr describe-repositories --repository-names ${APP_NAME}-${TRAVIS_BRANCH}-laravel --region ${AWS_REGION} --query 'repositories[0].repositoryUri' --output text)
+        - docker build -t ${ECR_URI_LARAVEL}:${IMAGE_TAG} ./laravel --build-arg ENCRYPT_KEY=${ENCRYPT_KEY}
+        - docker build -t ${ECR_URI_APACHE}:${IMAGE_TAG} -f ./laravel/docker/apache/Dockerfile ./laravel
         - docker push ${ECR_URI_LARAVEL}
         - docker push ${ECR_URI_APACHE}
-        # TODO: blue green deployment with CodeDeploy
-
-
-
+        - cd ../infra
+        - export NEW_TASK_DEFINITION=$(sh code_deploy/get_new_taskdef.sh 7f9f226)
+        - export TASKDEF_ARN=$(aws ecs register-task-definition --region ${AWS_REGION} --family ${APP_NAME}-${TRAVIS_BRANCH} --cli-input-json "$NEW_TASK_DEFINTION" | jq '.taskDefinition.taskDefinitionArn' -r)
+        - export TASKDEF_ARN=$(echo $TASKDEF_ARN | sed 's/\//\\\//g')
+        - export APACHE_CONTAINER_NAME="${APP_NAME}-${TRAVIS_BRANCH}-apache"
+        - cat code_deploy/appspec.yml | sed "s/\${TASKDEF_ARN}/${TASKDEF_ARN}/" | sed "s/\${APACHE_CONTAINER_NAME}/${APACHE_CONTAINER_NAME}/" > code_deploy/appspec-changed.yml
+        - export BUCKET_NAME="${APP_NAME}-${TRAVIS_BRANCH}-codedeploy"
+        - aws s3 cp code_deploy/appspec-changed.yml s3://${BUCKET_NAME}/appspec.yml
+        - cat code_deploy/deployment.json | sed "s/\${APP_NAME}/${APP_NAME}-${TRAVIS_BRANCH}-laravel/g" | sed "s/\${BUCKET_NAME}/${BUCKET_NAME}/g" > code_deploy/deployment-changed.json
+        - aws deploy create-deployment --region ${AWS_REGION} --cli-input-json file://code_deploy/deployment-changed.json

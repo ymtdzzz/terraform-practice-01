@@ -8,6 +8,11 @@ variable "hosted_domain" {
   default = "terraformpractice.zeroclock.dev"
 }
 
+variable "vpc_cidr" {
+  type = string
+  default = "10.0.0.0/16"
+}
+
 variable "master_username" {
   type    = string
   default = "masteruser"

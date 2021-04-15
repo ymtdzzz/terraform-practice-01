@@ -5,6 +5,12 @@ terraform {
     key    = "terraform.tfstate"
     region = "us-east-1"
   }
+  required_providers {
+    mysql = {
+      source = "terraform-providers/mysql"
+      version = ">= 1.5"
+    }
+  }
 }
 
 provider "aws" {
@@ -34,4 +40,15 @@ module "ecs_laravel" {
 
   ecr_laravel_repo = var.ecr_laravel_repo
   ecr_apache_repo  = var.ecr_apache_repo
+}
+
+module "code_deploy" {
+  source = "./code_deploy"
+
+  name = var.app_name
+  ecs_cluster_name = module.ecs_laravel.ecs_cluster_name
+  ecs_service_name = module.ecs_laravel.ecs_service_name
+  alb_listener_arn = aws_lb_listener.https.arn
+  alb_blue_target_group_name = module.ecs_laravel.ecs_alb_blue_target_group_name
+  alb_green_target_group_name = module.ecs_laravel.ecs_alb_green_target_group_name
 }

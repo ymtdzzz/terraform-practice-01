@@ -1,0 +1,12 @@
+{
+  "applicationName": "${APP_NAME}",
+  "deploymentGroupName": "${APP_NAME}",
+  "revision": {
+    "revisionType": "S3",
+    "s3Location": {
+      "bucket": "${BUCKET_NAME}",
+      "key": "appspec.yml",
+      "bundleType": "YAML"
+    }
+  }
+}

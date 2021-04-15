@@ -1,5 +1,6 @@
 locals {
   database_name = "${local.ws}laravel"
+  private_subnet_host = "${cidrhost(var.vpc_cidr, 0)}/${cidrnetmask(var.vpc_cidr)}"
 }
 
 resource "aws_security_group" "this" {
@@ -71,4 +72,31 @@ resource "aws_rds_cluster_instance" "this" {
 
   instance_class = "db.t3.small"
 }
+
+# In production, app user should be created
+
+# resource "random_password" "password_laravel" {
+#   length  = 16
+#   special = false
+# }
+
+# provider "mysql" {
+#   endpoint = aws_rds_cluster.this.endpoint
+#   username = var.master_username
+#   password = random_password.password.result
+# }
+
+# # create laravel user
+# resource "mysql_user" "laravel" {
+#   user = var.laravel_username
+#   host = local.private_subnet_host
+#   plaintext_password = random_password.password_laravel.result
+# }
+
+# resource "mysql_grant" "laravel" {
+#   user = mysql_user.laravel.user
+#   host = local.private_subnet_host
+#   database = local.database_name
+#   privileges = ["SELECT", "INSERT", "UPDATE", "DELETE"]
+# }
 /**/

@@ -172,7 +172,22 @@ resource "aws_vpc_endpoint" "vpc_endpoint_sqs" {
 ### ECR PrivateLink end ###
 
 resource "aws_lb_target_group" "this" {
-  name = local.name
+  name = "${local.name}-blue"
+
+  vpc_id = var.vpc_id
+
+  port        = 80
+  target_type = "ip"
+  protocol    = "HTTP"
+
+  health_check {
+    port = 80
+    path = "/"
+  }
+}
+
+resource "aws_lb_target_group" "this_green" {
+  name = "${local.name}-green"
 
   vpc_id = var.vpc_id
 
@@ -352,6 +367,10 @@ resource "aws_ecs_service" "this" {
   cluster = aws_ecs_cluster.this.name
 
   task_definition = aws_ecs_task_definition.this.arn
+
+  deployment_controller {
+    type = "CODE_DEPLOY"
+  }
 
   network_configuration {
     subnets          = var.subnet_ids

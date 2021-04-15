@@ -1,5 +1,9 @@
+locals {
+  subnets = cidrsubnets(var.vpc_cidr, 8, 8, 8, 8, 8, 8)
+}
+
 resource "aws_vpc" "main" {
-  cidr_block = "10.0.0.0/16"
+  cidr_block = var.vpc_cidr
 
   enable_dns_hostnames = true
 
@@ -12,7 +16,7 @@ resource "aws_vpc" "main" {
 resource "aws_subnet" "public_1a" {
   vpc_id            = aws_vpc.main.id
   availability_zone = "us-east-1a"
-  cidr_block        = "10.0.1.0/24"
+  cidr_block        = local.subnets.0
 
   tags = {
     Name = "${var.app_name}-public-1a"
@@ -22,7 +26,7 @@ resource "aws_subnet" "public_1a" {
 resource "aws_subnet" "public_1c" {
   vpc_id            = aws_vpc.main.id
   availability_zone = "us-east-1c"
-  cidr_block        = "10.0.2.0/24"
+  cidr_block        = local.subnets.1
 
   tags = {
     Name = "${var.app_name}-public-1c"
@@ -32,7 +36,7 @@ resource "aws_subnet" "public_1c" {
 resource "aws_subnet" "public_1d" {
   vpc_id            = aws_vpc.main.id
   availability_zone = "us-east-1d"
-  cidr_block        = "10.0.3.0/24"
+  cidr_block        = local.subnets.2
 
   tags = {
     Name = "${var.app_name}-public-1d"
@@ -44,7 +48,7 @@ resource "aws_subnet" "public_1d" {
 resource "aws_subnet" "private_1a" {
   vpc_id                  = aws_vpc.main.id
   availability_zone       = "us-east-1a"
-  cidr_block              = "10.0.10.0/24"
+  cidr_block              = local.subnets.3
   map_public_ip_on_launch = false
 
   tags = {
@@ -55,7 +59,7 @@ resource "aws_subnet" "private_1a" {
 resource "aws_subnet" "private_1c" {
   vpc_id                  = aws_vpc.main.id
   availability_zone       = "us-east-1c"
-  cidr_block              = "10.0.20.0/24"
+  cidr_block              = local.subnets.4
   map_public_ip_on_launch = false
 
   tags = {
@@ -66,7 +70,7 @@ resource "aws_subnet" "private_1c" {
 resource "aws_subnet" "private_1d" {
   vpc_id                  = aws_vpc.main.id
   availability_zone       = "us-east-1d"
-  cidr_block              = "10.0.30.0/24"
+  cidr_block              = local.subnets.5
   map_public_ip_on_launch = false
 
   tags = {
