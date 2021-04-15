@@ -67,7 +67,7 @@ jobs:
         - cd ../infra
         - export NEW_TASK_DEFINITION=$(bash code_deploy/get_new_taskdef.sh ${IMAGE_TAG} ${APP_NAME} ${AWS_REGION})
         - echo ${NEW_TASK_DEFINITION}
-        - export TASKDEF_ARN=$(aws ecs register-task-definition --region ${AWS_REGION} --family ${APP_NAME}-${TRAVIS_BRANCH} --cli-input-json "$NEW_TASK_DEFINTION" | jq '.taskDefinition.taskDefinitionArn' -r)
+        - export TASKDEF_ARN=$(aws ecs register-task-definition --region ${AWS_REGION} --family ${APP_NAME}-${TRAVIS_BRANCH} --cli-input-json ${NEW_TASK_DEFINTION} | jq '.taskDefinition.taskDefinitionArn' -r)
         - export TASKDEF_ARN=$(echo $TASKDEF_ARN | sed 's/\//\\\//g')
         - export APACHE_CONTAINER_NAME="${APP_NAME}-${TRAVIS_BRANCH}-apache"
         - cat code_deploy/appspec.yml | sed "s/\${TASKDEF_ARN}/${TASKDEF_ARN}/" | sed "s/\${APACHE_CONTAINER_NAME}/${APACHE_CONTAINER_NAME}/" > code_deploy/appspec-changed.yml

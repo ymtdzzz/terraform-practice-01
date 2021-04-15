@@ -3,10 +3,12 @@
 # set -eux
 
 TAG=$1
+APP_NAME=$2
+REGION=$3
 
 # get current taskdef
 # ref: https://github.com/aws/aws-cli/issues/3064#issuecomment-784614089
-TASK_DEFINITION=$(aws ecs describe-task-definition --task-definition terraform-practice-dev --region us-east-1 \
+TASK_DEFINITION=$(aws ecs describe-task-definition --task-definition ${APP_NAME} --region ${REGION} \
       --query '{  containerDefinitions: taskDefinition.containerDefinitions,
                   family: taskDefinition.family,
                   taskRoleArn: taskDefinition.taskRoleArn,
