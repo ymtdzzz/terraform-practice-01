@@ -169,6 +169,17 @@ resource "aws_vpc_endpoint" "vpc_endpoint_sqs" {
   private_dns_enabled = true
 }
 
+resource "aws_vpc_endpoint" "vpc_endpoint_for_ssmmessages" {
+  service_name      = "com.amazonaws.us-east-1.ssmmessages"
+  vpc_endpoint_type = "Interface"
+  vpc_id            = var.vpc_id
+  subnet_ids        = var.subnet_ids
+
+  security_group_ids = [aws_security_group.vpc_endpoint.id]
+
+  private_dns_enabled = true
+}
+
 ### ECR PrivateLink end ###
 
 resource "aws_lb_target_group" "this" {
