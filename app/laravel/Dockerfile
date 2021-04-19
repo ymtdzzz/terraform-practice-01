@@ -93,7 +93,7 @@ COPY . .
 COPY entrypoint.sh /var/tmp/entrypoint.sh
 
 RUN set -x \
-    && composer install --no-progress --no-dev \
+    && composer install --no-progress \
     && php artisan config:clear \
     && php artisan key:generate \
     && php artisan config:cache \
